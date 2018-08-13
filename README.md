@@ -5,13 +5,12 @@ Conifer is a library intended to make it simple to load configuration from multi
 
 The user defines a configuration schema and possible sources, and conifer does the rest.
 
+Schema
+------
+
 Conifer uses JSON Schema ([json-schema.org](json-schema.org)) to validate your configuration.
 
-Derived values
---------------
-
-For convenience, conifer also allows for a single layer of derived configuration values.
-This allows you to use one or more resolved configuration values to define derived configuration values using arbitrary logic defined in user-supplied functions.
+The schema must be of type `object` and have defined `properites` which define your application's possible configuration keys.
 
 Nested values
 -------------
@@ -21,18 +20,23 @@ Conifer supports nested configuration values, or configuration 'sections'.
 When a given configuration source does not naturally supply a means of nesting, keys and sub-keys are joined with the '.' character.
 In the example below, this means the logging verbosity can be set with the environment variable `MYAPP_LOGGING.VERBOSITY`.
 
+Derived values
+--------------
+
+For convenience, conifer also allows for a single layer of derived configuration values.
+This allows you to use one or more resolved configuration values to define derived configuration values using arbitrary logic defined in user-supplied functions.
+
 Usage
 -----
 
 ```python
 from conifer import Conifer
-from conifer.sources import EnvironmentConfig
 
 
 schema = {
-    '$schema': 'http://json-schema.org/draft-07/schema#'  # meta-schema for this object
+    '$schema': 'http://json-schema.org/draft-04/schema#'  # meta-schema for this object
     'title': 'My apps configuration schema',
-    'description': ('This is a Draft 07 JSON schema document describing valid configuration'
+    'description': ('This is a Draft 04 JSON schema document describing valid configuration'
                     ' options for this application.'),
     'type': 'object',
     'properites': {
@@ -78,7 +82,6 @@ derivations = {
 conf = Conifer(
     schema,
     derivations=derivations,
-    sources=[EnvironmentConfig()])
 )
 
 app = Flask()
