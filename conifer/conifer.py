@@ -52,6 +52,7 @@ class Conifer(object):
         """
         new_config = _update_config(self._schema, self._sources, self._derivations)
         recursive_update(self._config, new_config)
+        self._validator.validate(self._config)
 
     def __getitem__(self, key):
         return self._config[key]
