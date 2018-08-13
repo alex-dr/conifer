@@ -69,6 +69,7 @@ schema = {
 
 derivations = {
     'DEBUG_PORT': {
+        'description': 'Port the application will use for serving debug requests',
         'derivation': lambda myapp_port: myapp_port + 1,
         'parameters': ['PORT'],
     }
@@ -98,7 +99,7 @@ You may optionally specify a prefix string by which all top-level keys will be p
 EnvironmentConfig(prefix='MYAPP.')
 ```
 
-Will successfully load the following key-value pairs for the schema used in the example above:
+It will successfully load the following key-value pairs for the schema used in the example above:
 
 ```bash
 export MYAPP.PORT = '1234'  # loads as integer 1234
