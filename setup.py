@@ -12,7 +12,8 @@ setup(name='conifer',
       ],
       extras_require={
           'test': [
-              'pytest'
+              'pytest',
+              'pytest-mock',
           ],
       },
       packages=find_packages(),
