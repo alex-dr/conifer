@@ -7,7 +7,7 @@ schema = {
     'description': ('This is a Draft 04 JSON schema document describing valid configuration'
                     ' options for this application.'),  # optional - unused by conifer
     'type': 'object',  # optional
-    'properties': {
+    'properties': {  # required
         'LOGGING': {
             'description': 'Options pertaining to logging for myapp',
             'type': 'object',

@@ -105,3 +105,6 @@ def _validate_schema(schema):
 
     validator = Draft4Validator(json_schema)
     validator.validate(schema)
+
+    if 'properties' not in schema:
+        raise ValueError('Invalid schema: must have `properties` key')
