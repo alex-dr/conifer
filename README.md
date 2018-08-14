@@ -50,7 +50,7 @@ conf = Conifer(schema,
                sources=[
                    YAMLConfigLoader(path='/etc/myapp/config.yaml'),
                    YAMLConfigLoader(path=os.path.expanduser('~/.myapp/config.yaml')),`
-                   EnvironmentConfigLoader(prefix='MYAPP.')
+                   EnvironmentConfigLoader(prefix='MYAPP_')
                 ])
 ```
 
@@ -95,10 +95,10 @@ EnvironmentConfig(prefix='MYAPP_')
 It will successfully load the following key-value pairs for the schema used in the example above:
 
 ```bash
-export MYAPP.PORT = '1234'  # loads as integer 1234
-export MYAPP.LOGGING.VERBOSITY = WARN  # loads as string 'WARN'
-export MYAPP.LOGGING.OUTPUT_FILE = ''  # loads as None, same as not setting it at all
-export MYAPP.DEBUG_MODE = yes  # loads as boolean True
+export MYAPP_PORT = '1234'  # loads as integer 1234
+export MYAPP_LOGGING_VERBOSITY = WARN  # loads as string 'WARN'
+export MYAPP_LOGGING_OUTPUT_FILE = ''  # loads as None, same as not setting it at all
+export MYAPP_DEBUG_MODE = yes  # loads as boolean True
 ```
 
 Booleans are loaded using yaml and then casting with Python's `bool()`.
