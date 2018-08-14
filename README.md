@@ -1,4 +1,5 @@
-# conifer
+conifer
+-------
 
 Conifer is a library intended to make it simple to load configuration from multiple sources.
 
@@ -75,7 +76,6 @@ For convenience, conifer also allows for a single layer of derived configuration
 This allows you to use one or more resolved configuration values to define derived configuration values using arbitrary logic defined in user-supplied functions.
 
 ## Usage
------
 
 For an example script, see [example.py](tests/example.py).
 
