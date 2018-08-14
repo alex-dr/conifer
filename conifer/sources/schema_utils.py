@@ -30,6 +30,7 @@ def iter_schema(schema):
     for key, value in schema.get('properties', {}).iteritems():
         if value.get('$ref'):
             value.update(validator.resolver.resolve(value.get('$ref'))[1])
+            value.pop('$ref')
         if value.get('type') == 'object':
             for subkey, sub_value in iter_schema(value):
                 yield ([key] + subkey, sub_value)

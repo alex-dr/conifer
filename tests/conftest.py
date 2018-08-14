@@ -41,7 +41,10 @@ TEST_SCHEMA = {
                 },
             },
         },
-        'array_thing': {'$ref': '#definitions/reftype'},
+        'array_thing': {
+            '$ref': '#definitions/reftype',
+            'default': {}
+        },
     },
 }
 
