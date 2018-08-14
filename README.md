@@ -38,7 +38,7 @@ Conifer uses JSON Schema Draft 4 ([json-schema.org](json-schema.org)) to define 
 
 The schema must be of type `object` and have defined `properites` which define your application's possible configuration keys.
 
-## Sources (TODO)
+## Sources (YAMLConfigLoader: TODO)
 
 Conifer includes support for several sources out of the box, but users can easily create their own classes to provide arbitrary extensions of possible configuration sources.
 
@@ -58,7 +58,7 @@ The order of sources in this list represents the relative precedence of each sou
 Values obtained by later sources supercede values obtained in earlier sources.
 Values from the schema default are considered to have the lowest precedence.
 
-## Nested values (TODO)
+## Nested values
 
 Conifer supports nested configuration values, or configuration 'sections'.
 
@@ -74,69 +74,10 @@ When a nested key has a default, it will only be defined if the parent object is
 For convenience, conifer also allows for a single layer of derived configuration values.
 This allows you to use one or more resolved configuration values to define derived configuration values using arbitrary logic defined in user-supplied functions.
 
-## Usage (TODO)
+## Usage
 -----
 
-```python
-from conifer import Conifer
-
-
-schema = {
-    '$schema': 'http://json-schema.org/draft-04/schema#'  # meta-schema for this object
-    'title': 'My apps configuration schema',
-    'description': ('This is a Draft 04 JSON schema document describing valid configuration'
-                    ' options for this application.'),
-    'type': 'object',
-    'properites': {
-        'LOGGING': {
-            'description': 'Options pertaining to logging for myapp',
-            'type': 'object',
-            'properties': {
-                'VERBOSITY': {
-                    'description': 'Logging verbosity for myapp',
-                    'type': 'string',
-                    'enum': ['DEBUG', 'INFO', 'WARN', 'ERROR'],
-                    'default': 'INFO'
-                },
-                'OUTPUT_FILE': {
-                    'description': '(optional) Absolute or relative file path for logging',
-                    'type': ['string', 'null']
-                },
-            },
-        },
-        'DEBUG_MODE': {
-            'description': 'Enable debug mode for my Flask app',
-            'type': 'boolean',
-            'default': False
-        },
-        'PORT': {
-            'description': 'Port the application will listen on',
-            'type': 'integer',
-            'minimum': 1,
-            'maximum': 65534,
-            'default': 8080
-        }
-    }
-}
-
-derivations = {
-    'DEBUG_PORT': {
-        'description': 'Port the application will use for serving debug requests',
-        'derivation': lambda myapp_port: myapp_port + 1,
-        'parameters': ['PORT'],
-    }
-}
-
-conf = Conifer(
-    schema,
-    derivations=derivations,
-)
-
-app = Flask()
-
-if __name__ == '__main__':
-    app.run(port=conf['PORT'], debug=conf['DEBUG_MODE'])
-```
+For an example script, see [example.py](tests/example.py).
 
 ## Sources
 

@@ -4,6 +4,7 @@ from conifer import Conifer
 
 
 TEST_SCHEMA = {
+    '$schema': 'http://json-schema.org/draft-04/schema',
     'definitions': {
         'reftype': {
             'type': 'object',
@@ -42,7 +43,7 @@ TEST_SCHEMA = {
             },
         },
         'array_thing': {
-            '$ref': '#definitions/reftype',
+            '$ref': '#/definitions/reftype',
             'default': {}
         },
     },

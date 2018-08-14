@@ -17,8 +17,9 @@ class EnvironmentConfigLoader(object):
         for key_name, sub_schema in iter_schema(schema):
             environment_key = self._prefix + '_'.join(key_name)
             raw_value = os.environ.get(environment_key)
-            if raw_value is not None:
-                coerced_value = coerce_value(raw_value, sub_schema)
+            coerced_value = coerce_value(raw_value, sub_schema)
+
+            if coerced_value is not None:
                 recursive_update(partial_config, nest_value(key_name, coerced_value))
 
         return partial_config

@@ -44,6 +44,10 @@ def coerce_value(value, schema):
     We're doing our best here folks, if it doesn't work, your schema
     may be more complicated than you need it to be...
     """
+    # nonetype is easy to handle
+    if value is None:
+        return None
+
     validator = Draft4Validator(schema)
     value_type = type(value)
     schema_type = schema.get('type')
