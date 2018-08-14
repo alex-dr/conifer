@@ -2,12 +2,12 @@ from conifer import Conifer
 
 
 schema = {
-    '$schema': 'http://json-schema.org/draft-04/schema#',  # meta-schema for this object
-    'title': 'My apps configuration schema',
+    '$schema': 'http://json-schema.org/draft-04/schema',  # meta-schema for this object
+    'title': 'My apps configuration schema',  # optional - unused by conifer
     'description': ('This is a Draft 04 JSON schema document describing valid configuration'
-                    ' options for this application.'),
-    'type': 'object',
-    'properites': {
+                    ' options for this application.'),  # optional - unused by conifer
+    'type': 'object',  # optional
+    'properties': {
         'LOGGING': {
             'description': 'Options pertaining to logging for myapp',
             'type': 'object',
@@ -23,6 +23,7 @@ schema = {
                     'type': ['string', 'null']
                 },
             },
+            'default': {},  # required for nested defaults to be defaulted
         },
         'DEBUG_MODE': {
             'description': 'Enable debug mode for my Flask app',
@@ -41,8 +42,8 @@ schema = {
 
 derivations = {
     'DEBUG_PORT': {
-        'description': 'Port the application will use for serving debug requests',
-        'derivation': lambda myapp_port: myapp_port + 1,
+        'description': 'Port the application will use for serving debug requests',  # optional
+        'derivation': lambda port: port + 1,
         'parameters': ['PORT'],
     }
 }
@@ -54,6 +55,7 @@ conf = Conifer(
 
 
 def main():
+    print(conf._config)
     assert conf['DEBUG_MODE'] is False
     assert conf['PORT'] == 8080
     assert conf['LOGGING']['VERBOSITY'] == 'INFO'

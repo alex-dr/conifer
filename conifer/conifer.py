@@ -18,8 +18,8 @@ class Conifer(object):
     By default, Conifer will use the built-in EnvironmentConfigLoader source only.
     """
 
-    # The populated configuration data
-    _config = {}
+    # The populated configuration data, should be a plain dict
+    _config = None
 
     def __init__(self, schema, sources=None, derivations=None):
         # ensure we have a valid JSON Schema
@@ -28,6 +28,7 @@ class Conifer(object):
 
         DefaultSettingValidator = _extend_with_default(Draft4Validator)
         # update self._config with default values from the schema
+        self._config = {}
         DefaultSettingValidator(schema).validate(self._config)
 
         self._validator = Draft4Validator(self._schema)
