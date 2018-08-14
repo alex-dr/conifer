@@ -85,11 +85,11 @@ For an example script, see [example.py](tests/example.py).
 
 This class loads values out of the environment, using the schema for hints on how to attempt to cast inputs into various types.
 
-By default it will look for the keys in your configuration, joining nested keys with the `.` character.
+By default it will look for the keys in your configuration, joining nested keys with the `_` character.
 You may optionally specify a prefix string by which all top-level keys will be prefixed, for example, the object
 
 ```python
-EnvironmentConfig(prefix='MYAPP.')
+EnvironmentConfig(prefix='MYAPP_')
 ```
 
 It will successfully load the following key-value pairs for the schema used in the example above:
