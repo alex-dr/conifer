@@ -1,54 +1,7 @@
-from conifer import Conifer
+"""Tests of basic Conifer class using a couple different fixtures.
 
-import pytest
-
-
-TEST_SCHEMA = {
-    'definitions': {
-        'reftype': {
-            'type': 'object',
-            'properties': {
-                'some_prop': {
-                    'type': 'array',
-                    'default': [1],
-                },
-            },
-        },
-    },
-    'properties': {
-        'foo': {
-            'type': 'string',
-            'default': 'bar',
-            'randomextrakey': 'whocareslol',
-        },
-        'bar': {
-            'type': 'object',
-            'default': {},
-            'properties': {
-                'nested': {
-                    'type': 'string',
-                    'default': 'baz'
-                },
-                'more_nested': {
-                    'type': 'object',
-                    'default': {},
-                    'properties': {
-                        'subkey': {
-                            'type': 'integer',
-                            'default': 1
-                        },
-                    },
-                },
-            },
-        },
-        'array_thing': {'$ref': '#definitions/reftype'},
-    },
-}
-
-
-@pytest.fixture()
-def conf():
-    return Conifer(TEST_SCHEMA)
+See conftest.py for fixtures.
+"""
 
 
 def test_basic_default(conf):
@@ -65,14 +18,6 @@ def test_more_nested_default(conf):
 
 def test_ref_array_default(conf):
     assert conf['array_thing']['some_prop'] == [1]
-
-
-@pytest.fixture(scope='function')
-def conf_env_patch(monkeypatch):
-    monkeypatch.setenv('foo', 'asdf')
-    monkeypatch.setenv('bar_nested', 'asdf')
-    monkeypatch.setenv('bar_more_nested_subkey', 2)
-    return Conifer(TEST_SCHEMA)
 
 
 def test_basic_env(conf_env_patch):

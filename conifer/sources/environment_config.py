@@ -1,4 +1,4 @@
-from .base import coerce_value, iter_schema, nest_value
+from .schema_utils import coerce_value, iter_schema, nest_value
 from conifer.utils import recursive_update
 
 import os
