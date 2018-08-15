@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 setup(name='conifer',
-      version='0.0.1.dev0',
+      version='0.0.1',
       description='Library for loading configuration values from multiple sources',
       author='alex-dr',
       author_email='alexconway12@gmail.com',
