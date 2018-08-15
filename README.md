@@ -4,8 +4,7 @@ Conifer is a library intended to make it simple to load configuration from multi
 
 The user defines a configuration schema and possible sources, and conifer does the rest.
 
-Conifer is still in initial development, but basic functionality described in this document is implemented.
-Sections describing future functionality are marked with TODO.
+Conifer is still in initial development, but the functionality described in this document is implemented.
 
 ## Basic example
 
