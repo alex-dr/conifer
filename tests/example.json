@@ -1,0 +1,5 @@
+{
+    "LOGGING": {
+        "OUTPUT_FILE": "/my/log"
+    }
+}

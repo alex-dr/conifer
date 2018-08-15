@@ -138,6 +138,14 @@ _coercion_matrix = {
         'object': _string_to_object,
         'string': lambda x: x,
     },
+    unicode: {
+        'array': _string_to_array,
+        'boolean': _string_to_bool,
+        'integer': lambda x: int(x),
+        'number': _coerce_to_number,
+        'object': _string_to_object,
+        'string': lambda x: x,
+    },
     int: {
         'array': lambda x: [x],
         'boolean': lambda x: bool(x),

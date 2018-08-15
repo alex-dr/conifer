@@ -1,11 +1,10 @@
-conifer
--------
+# conifer
 
 Conifer is a library intended to make it simple to load configuration from multiple sources.
 
 The user defines a configuration schema and possible sources, and conifer does the rest.
 
-Conifer is still in initial development, so almost no functionality described in this document is implemented.
+Conifer is still in initial development, but basic functionality described in this document is implemented.
 Sections describing future functionality are marked with TODO.
 
 ## Basic example
@@ -13,7 +12,7 @@ Sections describing future functionality are marked with TODO.
 The default invocation of Conifer will load properties defined in your schema from the environment, using default values from your schema:
 
 ```python
-from confier import Conifer
+from conifer import Conifer
 
 schema = {
     'properties': {
@@ -39,41 +38,44 @@ Conifer uses JSON Schema Draft 4 ([json-schema.org](json-schema.org)) to define 
 
 The schema must be of type `object` and have defined `properites` which define your application's possible configuration keys.
 
-## Sources (YAMLConfigLoader: TODO)
+## Sources
 
 Conifer includes support for several sources out of the box, but users can easily create their own classes to provide arbitrary extensions of possible configuration sources.
 
 Sources are defined by passing instantiated classes as an array to `Conifer`:
 
 ```python
-from conifer.sources import YAMLConfigLoader, EnvironmentConfigLoader
+from conifer.sources import JSONConfigLoader, EnvironmentConfigLoader
 conf = Conifer(schema,
                sources=[
-                   YAMLConfigLoader(path='/etc/myapp/config.yaml'),
-                   YAMLConfigLoader(path=os.path.expanduser('~/.myapp/config.yaml')),`
+                   JSONConfigLoader(path='/etc/myapp/config.yaml'),
+                   JSONConfigLoader(path=os.path.expanduser('~/.myapp/config.yaml')),`
                    EnvironmentConfigLoader(prefix='MYAPP_')
                 ])
 ```
 
 The order of sources in this list represents the relative precedence of each source.
 Values obtained by later sources supercede values obtained in earlier sources.
-Values from the schema default are considered to have the lowest precedence.
+Values from the schema default are automatically loaded and considered to have the lowest precedence.
 
 ## Nested values
 
 Conifer supports nested configuration values, or configuration 'sections'.
 
-When a given configuration source does not naturally supply a means of nesting, keys and sub-keys are joined with the `.` character.
-In the example below, this means the logging verbosity can be set with the environment variable `LOGGING.VERBOSITY`.
-
 When inspecting configuration from your code, nested values can be obtained as objects (`conf['myobj'] == {'subkey': 'val'}`).
 
-When a nested key has a default, it will only be defined if the parent object is defined.
+When a nested key has a default, it will only be defined by if the parent object is defined.
 
-## Derived values (TODO)
+## Derived values
 
 For convenience, conifer also allows for a single layer of derived configuration values.
 This allows you to use one or more resolved configuration values to define derived configuration values using arbitrary logic defined in user-supplied functions.
+
+This feature can be used, as seen in the example, by passing a valid derivation dict to the keyword argument `derivations` when constructing a `Conifer` instance.
+
+Derived keys are added to your original config object and can be nested.
+
+If one of the supplied keys required for your derivation is not present in your resolved configuration, the derived key will not be added.
 
 ## Usage
 
@@ -81,7 +83,7 @@ For an example script, see [example.py](tests/example.py).
 
 ## Sources
 
-### EnvironmentConfigLoader (TODO)
+### EnvironmentConfigLoader
 
 This class loads values out of the environment, using the schema for hints on how to attempt to cast inputs into various types.
 

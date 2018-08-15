@@ -1,4 +1,5 @@
 # builtin
+from copy import deepcopy
 import json
 import os
 
@@ -7,7 +8,7 @@ from jsonschema import Draft4Validator, validators
 
 # this package
 from .sources import EnvironmentConfigLoader
-from .utils import recursive_update
+from .utils import get_in, recursive_update, set_in
 
 
 class Conifer(object):
@@ -51,12 +52,48 @@ class Conifer(object):
         ------------
         modifies self._config
         """
-        new_config = _update_config(self._schema, self._sources, self._derivations)
+        new_config = _update_config(self._config, self._schema, self._sources, self._derivations)
         self._validator.validate(new_config)
         recursive_update(self._config, new_config)
 
     def __getitem__(self, key):
         return self._config[key]
+
+    def get(self, key, default=None):
+        try:
+            return self.__getitem__(key)
+        except KeyError:
+            return default
+
+
+def _iter_derivations(derivations):
+    """Walk through derivations which may be nested.
+
+    Return (['nested', 'key'], value).
+    """
+    if derivations is not None:
+        for key, value in derivations.iteritems():
+            if 'derivation' not in value:
+                for subkey, sub_value in _iter_derivations(value):
+                    yield ([key] + subkey, sub_value)
+            else:
+                yield ([key], value)
+
+
+def _derive_values(config, derivations):
+    """Use derivation rules to determine derived config values."""
+    derived_config = {}
+    for key, value in _iter_derivations(derivations):
+        param_keys = value['parameters']
+        try:
+            params = [get_in(config, param_key) for param_key in param_keys]
+        except KeyError:
+            continue
+        else:
+            result = value['derivation'](*params)
+            set_in(derived_config, key, result)
+
+    return derived_config
 
 
 def _extend_with_default(validator_class):
@@ -86,13 +123,21 @@ def _extend_with_default(validator_class):
     )
 
 
-def _update_config(schema, sources, derivations):
-    """Gather configuration and derived values from sources."""
-    config = {}
+def _update_config(existing_config, schema, sources, derivations):
+    """Gather configuration and derived values from sources.
+
+    Derived values must include the existing configuration, but
+    we don't want to modify the class's config in this method in order
+    to make the class method atomic.
+    """
+    config = deepcopy(existing_config)
+
     for source in sources:
         new_data = source.load_config(schema)
-        if new_data:
-            recursive_update(config, new_data)
+        recursive_update(config, new_data)
+
+    derived_values = _derive_values(config, derivations)
+    recursive_update(config, derived_values)
 
     return config
 

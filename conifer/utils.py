@@ -6,6 +6,9 @@ def recursive_update(original, updates):
 
     Lists are replaced, not updated. New values are added.
     """
+    if updates is None:
+        return
+
     for key, value in updates.iteritems():
         if isinstance(value, Mapping):
             # if original has a mapping, recursively update it
@@ -16,3 +19,29 @@ def recursive_update(original, updates):
                 original[key] = value
         else:
             original[key] = value
+
+
+def get_in(dic, key):
+    """Get maybe-nested value key from dic."""
+    # Allow string or list keys
+    if isinstance(key, str):
+        return dic[key]
+
+    if len(key) == 1:
+        return dic[key[0]]
+    else:
+        return get_in(dic[key[0]], key[1:])
+
+
+def set_in(dic, key, value):
+    """Set maybe nested value for key in dic."""
+    # Allow string or list keys
+    if isinstance(key, str):
+        dic[key] = value
+    else:
+        if len(key) == 1:
+            dic[key[0]] = value
+        else:
+            if key[0] not in dic:
+                dic[key[0]] = {}
+            set_in(dic[key[0]], key[1:], value)
