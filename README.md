@@ -44,7 +44,7 @@ Conifer includes support for several sources out of the box, but users can easil
 Sources are defined by passing instantiated classes as an array to `Conifer`:
 
 ```python
-from conifer.sources import JSONConfigLoader, EnvironmentConfigLoader
+from conifer.sources import JSONFileLoader, EnvironmentConfigLoader
 conf = Conifer(schema,
                sources=[
                    JSONConfigLoader(path='/etc/myapp/config.yaml'),
