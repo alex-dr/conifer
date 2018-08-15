@@ -63,7 +63,24 @@ Conifer supports nested configuration values, or configuration 'sections'.
 
 When inspecting configuration from your code, nested values can be obtained as objects (`conf['myobj'] == {'subkey': 'val'}`).
 
-When a nested key has a default, it will only be defined by if the parent object is defined.
+When a nested key has a default, it will only be defined if the parent object is defined.
+For example, if you want a nested key `nestedkey` to always be defaulted, you would default its parent to `{}`:
+
+```python
+schema = {
+    'properties': {
+        'key': {
+            'type': 'object',
+            'properties': {
+                'nestedkey': {
+                    'type': 'string',
+                    'default': 'foo'
+                },
+            }
+            'default': {},
+        },
+    },
+}
 
 ## Derived values
 
