@@ -77,7 +77,6 @@ class Conifer(object):
                            sources=sources,
                            derivations=self._derivations,
                            initial_config=self._config)
-        new_conf.update_config()
         return new_conf
 
     def __getitem__(self, key):
