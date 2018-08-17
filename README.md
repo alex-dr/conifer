@@ -83,6 +83,14 @@ schema = {
 }
 ```
 
+## Accessing values
+
+The Conifer object behaves more or less like a regular dictionary object, allowing the usual `conf['myobj']['subkey']` syntax.
+
+However, `__getattr__` is also overridden so users may also use the more convenient `conf.myobj.subkey` syntax.
+
+When using attribute syntax, nested objects are returned as `conifer.conifer._AttrDict` objects, which inherit from `dict`.
+
 ## Derived values
 
 For convenience, conifer also allows for a single layer of derived configuration values.

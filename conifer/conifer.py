@@ -59,11 +59,33 @@ class Conifer(object):
     def __getitem__(self, key):
         return self._config[key]
 
+    def __getattr__(self, key):
+        return _AttrDict(self._config).__getattr__(key)
+
     def get(self, key, default=None):
         try:
             return self.__getitem__(key)
         except KeyError:
             return default
+
+
+class _AttrDict(dict):
+    """Dict with mild overrides so we can use keys as attributes."""
+    _dict = None
+
+    def __init__(self, dic):
+        super(_AttrDict, self).__init__(dic)
+        self._dict = dic
+
+    def __getattr__(self, key):
+        value = self._dict.get(key)
+        if value is None:
+            raise AttributeError(value)
+
+        if isinstance(value, dict):
+            return _AttrDict(value)
+
+        return value
 
 
 def _iter_derivations(derivations):

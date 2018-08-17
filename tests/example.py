@@ -89,7 +89,8 @@ def main():
     assert conf['LOGGING']['VERBOSITY'] == 'INFO'
     # derived values are set
     assert conf.get('DEBUG_PORT', None) == conf['PORT'] + 1
-    assert conf['LOGGING']['OUTPUT_FILE_VERBOSITY'] == '/my/log_INFO'
+    assert conf.LOGGING.OUTPUT_FILE_VERBOSITY == '/my/log_INFO'
+    assert conf.LOGGING['OUTPUT_FILE_VERBOSITY'] == '/my/log_INFO'
 
 
 if __name__ == '__main__':
