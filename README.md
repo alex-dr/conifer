@@ -47,8 +47,8 @@ Sources are defined by passing instantiated classes as an array to `Conifer`:
 from conifer.sources import JSONFileLoader, EnvironmentConfigLoader
 conf = Conifer(schema,
                sources=[
-                   JSONConfigLoader(path='/etc/myapp/config.yaml'),
-                   JSONConfigLoader(path=os.path.expanduser('~/.myapp/config.yaml')),`
+                   JSONConfigLoader(path='/etc/myapp/config.json'),
+                   JSONConfigLoader(path=os.path.expanduser('~/.myapp/config.json')),`
                    EnvironmentConfigLoader(prefix='MYAPP_')
                 ])
 ```

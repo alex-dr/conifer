@@ -1,4 +1,5 @@
 import json
+import os
 
 from .schema_utils import coerce_value, iter_schema, nest_value
 from conifer.utils import get_in, recursive_update
@@ -23,6 +24,8 @@ class JSONFileLoader(object):
         if path is None and fp is None:
             raise ValueError('JSONFileLoader must be instantiated with one of path or fp')
 
+        if path is not None:
+            path = os.path.abspath(os.path.expanduser(os.path.expandvars(path)))
         self._path = path
         self._fp = fp
 
