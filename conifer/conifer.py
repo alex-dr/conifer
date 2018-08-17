@@ -22,14 +22,15 @@ class Conifer(object):
     # The populated configuration data, should be a plain dict
     _config = None
 
-    def __init__(self, schema, sources=None, derivations=None):
+    def __init__(self, schema, sources=None, derivations=None, initial_config=None):
         # ensure we have a valid JSON Schema
         _validate_schema(schema)
         self._schema = schema
 
         DefaultSettingValidator = _extend_with_default(Draft4Validator)
+        self._config = initial_config or {}
         # update self._config with default values from the schema
-        self._config = {}
+        # since this uses setdefault, it shouldn't override initial_config
         DefaultSettingValidator(schema).validate(self._config)
 
         self._validator = Draft4Validator(self._schema)
@@ -56,6 +57,29 @@ class Conifer(object):
         self._validator.validate(new_config)
         recursive_update(self._config, new_config)
 
+    def override(self, sources=None):
+        """Create a new Conifer with additional overrides from provided sources
+
+        Does not modify passed conf instance.
+
+        Parameters
+        ----------
+        sources : list
+            List of instantiated loader classes
+        derivations : dict
+            Dict of derivations
+
+        Returns
+        -------
+        Conifer
+        """
+        new_conf = Conifer(self._schema,
+                           sources=sources,
+                           derivations=self._derivations,
+                           initial_config=self._config)
+        new_conf.update_config()
+        return new_conf
+
     def __getitem__(self, key):
         return self._config[key]
 
@@ -80,7 +104,7 @@ class _AttrDict(dict):
     def __getattr__(self, key):
         value = self._dict.get(key)
         if value is None:
-            raise AttributeError(value)
+            raise AttributeError('{self} object has no such attribute {key}'.format(**locals()))
 
         if isinstance(value, dict):
             return _AttrDict(value)
@@ -110,6 +134,7 @@ def _derive_values(config, derivations):
         try:
             params = [get_in(config, param_key) for param_key in param_keys]
         except KeyError:
+            # If key is not defined, don't try to derive a value
             continue
         else:
             result = value['derivation'](*params)
