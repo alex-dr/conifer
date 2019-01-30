@@ -13,6 +13,7 @@ The default invocation of Conifer will load properties defined in your schema fr
 ```python
 from conifer import Conifer
 
+
 schema = {
     'properties': {
         'foo': {
@@ -132,3 +133,35 @@ Booleans are loaded using yaml and then casting with Python's `bool()`.
 Thus, valid values for a `False` result include, `0`, `no`, `FALSE`, and `false`.
 
 Null values can be set with the strings `''`, `null`, `Null`, `NULL`, or by not defining the key, if the schema allows the value to be null or if it is not required.
+
+### JSONFileLoader
+
+This class loads values from JSON files.
+Just give it a path to a file and conifer will do the rest!
+
+Conifer will try to resolve an aboslute path, resolving `~` and `os.path.expandvars`.
+
+### ClickOptionLoader
+
+`click` is a popular tool for generating command line interfaces with a clean wrapper interface.
+
+Conifer can be used to generate common command line flags for your app, allowing you to use the same environment variables, config files, and other configuration sources in tandem with your CLI options.
+
+Let's see an example:
+
+```python
+import click
+from conifer import Conifer, click_wrap
+
+
+conf = Conifer(schema, ...)
+
+@click.command()
+@conf.click_wrap()
+def my_cmd(cli_conf):
+    """Print new conf with CLI params."""
+    click.secho(cli_conf)
+```
+
+To enable `click_wrap`, you must have `click` installed.
+You can install it with `pip install conifer[click]`, or including a compatible version of `click` in your application dependencies.

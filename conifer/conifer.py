@@ -1,5 +1,6 @@
 # builtin
 from copy import deepcopy
+from functools import wraps, reduce
 import json
 import os
 
@@ -7,7 +8,8 @@ import os
 from jsonschema import Draft4Validator, validators
 
 # this package
-from .sources import EnvironmentConfigLoader
+from .sources import EnvironmentConfigLoader, ClickOptionLoader
+from .sources.schema_utils import iter_schema
 from .utils import get_in, recursive_update, set_in
 
 
@@ -90,6 +92,84 @@ class Conifer(object):
             return self.__getitem__(key)
         except KeyError:
             return default
+
+    def click_wrap(self):
+        """Wrap a function with Click options.
+
+        Example:
+
+            >>> import click
+            >>> from conifer import Conifer
+            >>> conf = Conifer(schema, [source, ...])
+
+            >>> @click.command()
+            >>> @conf.click_wrap()
+            >>> def my_cmd(cli_conf):
+            ...     click.secho(cli_conf)
+
+            $ my_cmd --option value --nested-option value
+
+        click_wrap behaves as if you have added individaul click.option flags for
+        each configuration parameter in your Conifer schema, except it passes a
+        populated Conifer object to the wrapped function rather than individual
+        kwargs, allowing the CLI-provided configuration to be seamlessly combined
+        with the rest of your app's configuration.
+
+        Nested configuration sections are exposed by joining nested keys with the -
+        character. All underscores will also be replaced with - by Click
+
+        Positional arguments are not supported, and defaults will be taken from
+        your other Conifer configuration sources.
+
+        CLI options will take precedence over all other Conifer-derived settings.
+
+        Additional Click argument and option wrappers can be added as usual.
+        """
+        # click is an optional dependency, required only for this method
+        import click
+
+        def decorator(fn):
+
+            # map(kwarg name : click.option())
+            click_kwargs = {}
+
+            for schema_path, schema in iter_schema(self._schema):
+                option_name = '--{}'.format('-'.join(schema_path))
+                option_kwargs = {}
+                if schema.get('description'):
+                    option_kwargs['help'] = schema.get('description')
+
+                click_kwargs[option_name] = click.option(option_name, **option_kwargs)
+
+            @wraps
+            def wrapper(*args, **kwargs):
+                # Remove kwargs added by click option wrappers
+                stripped_kwargs = {k: v for k, v in kwargs.items() if k not in click_kwargs}
+
+                # Remove extraneous kwargs to get the user-populated CLI options
+                kwargs_from_click = {k: v for k, v in kwargs.items() if k in click_kwargs}
+
+                # Creates copy of populated self, adding the ClickOptionLoader
+                # The ClickOptionLoader initializes its data source from the
+                # kwargs added by the Click options and loads them in the new Conifer object
+                new_conf = self.override(sources=ClickOptionLoader(**kwargs_from_click))
+
+                # Finally, call the original function, with its original args/kwargs,
+                # but with the new conf passed as a positional
+                fn(new_conf, *args, **stripped_kwargs)
+
+            # Apply the click option wrappers to the base wrapper
+            # On the top of the call chain we expose the Click option flags,
+            # but we convert those into a populated Conifer which gets passed
+            # to the original function
+            click_wrapped = reduce(
+                lambda fn, dec: dec(fn),  # recursively apply click option wrappers
+                click_kwargs.values(),  # click option wrappers
+                wrapper)  # initial value - base wrapper
+
+            return click_wrapped
+
+        return decorator
 
 
 class _AttrDict(dict):
