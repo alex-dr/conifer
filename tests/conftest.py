@@ -64,5 +64,5 @@ def conf():
 def conf_env_patch(monkeypatch):
     monkeypatch.setenv('foo', 'asdf')
     monkeypatch.setenv('bar_nested', 'asdf')
-    monkeypatch.setenv('bar_more_nested_subkey', 2)
+    monkeypatch.setenv('bar_more_nested_subkey', '2')
     return Conifer(TEST_SCHEMA)

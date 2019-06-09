@@ -8,7 +8,8 @@ setup(name='conifer',
       author_email='alexconway12@gmail.com',
       url='https://github.com/alex-dr/conifer',
       install_requires=[
-          'jsonschema'
+          'jsonschema',
+          'PyYAML',
       ],
       extras_require={
           'test': [
