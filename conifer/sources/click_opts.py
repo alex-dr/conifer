@@ -20,7 +20,9 @@ class ClickOptionLoader(object):
         #
         partial_config = {}
         for parameter_key, raw_value in self.values.items():
-            coerced_value = coerce_value(raw_value, self.schema_info[parameter_key]["schema"])
+            coerced_value = coerce_value(
+                raw_value, self.schema_info[parameter_key]["schema"]
+            )
 
             if coerced_value is not None:
                 new_data = nest_value(
