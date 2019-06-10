@@ -8,6 +8,7 @@ from functools import wraps, reduce
 from .sources.click_opts import ClickOptionLoader
 from .sources.schema_utils import iter_schema
 
+
 def click_wrap(conf):
     """Wrap a function to provide Click options for a click command.
 
@@ -53,7 +54,7 @@ def click_wrap(conf):
         click_options = {}
         schema_info = {}
         for schema_path, schema in iter_schema(conf._schema):
-            option_flag = "--{}".format("-".join(schema_path).replace('_', '-'))
+            option_flag = "--{}".format("-".join(schema_path).replace("_", "-"))
             option_kwarg_name = _get_option_name(option_flag)
 
             # Kwargs for this new click.option
@@ -74,9 +75,9 @@ def click_wrap(conf):
 
             click_options[option_kwarg_name] = click_option
             schema_info[option_kwarg_name] = {
-                    'schema': schema,
-                    'schema_path': schema_path,
-                }
+                "schema": schema,
+                "schema_path": schema_path,
+            }
 
         @wraps(fn)
         def wrapper(*args, **kwargs):
@@ -86,7 +87,9 @@ def click_wrap(conf):
             #
 
             # kwargs added by other click.option wrappers
-            stripped_kwargs = {k: v for k, v in kwargs.items() if k not in click_options}
+            stripped_kwargs = {
+                k: v for k, v in kwargs.items() if k not in click_options
+            }
 
             # User-populated CLI options for the Conifer
             values_from_click = {k: v for k, v in kwargs.items() if k in click_options}
@@ -107,7 +110,9 @@ def click_wrap(conf):
         # but we convert those into a populated Conifer which gets passed
         # to the original function as a single positional
         click_wrapped = reduce(
-            lambda fn, decorator: decorator(fn),  # recursively apply click option wrappers
+            lambda fn, decorator: decorator(
+                fn
+            ),  # recursively apply click option wrappers
             click_options.values(),  # click option wrappers
             wrapper,
         )  # initial value - base wrapper
@@ -125,5 +130,6 @@ def _get_option_name(flag):
     # We can't get it from click.option because the Option class is initialized in the inner
     # function
     from click.core import Option
+
     option = Option([flag])
     return option.name

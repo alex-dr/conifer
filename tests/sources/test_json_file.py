@@ -8,14 +8,9 @@ import pytest
 
 # matches TEST_SCHEMA from conftest
 TEST_DATA = {
-    'foo': 'fffff',
-    'bar': {
-        'nested': 'cccc',
-        'more_nested': {
-            'subkey': 22,
-        },
-    },
-    'arraything': [5, 6, 7, 8],
+    "foo": "fffff",
+    "bar": {"nested": "cccc", "more_nested": {"subkey": 22}},
+    "arraything": [5, 6, 7, 8],
 }
 
 

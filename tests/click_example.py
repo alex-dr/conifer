@@ -22,7 +22,7 @@ def my_cmd(cli_conf, before_arg, after_arg, before_option=None, after_option=Non
     Click somehow forces the order to be that way.
     """
     click.secho(json.dumps(cli_conf._config, indent=4))
-    click.secho('before: {}, after: {}'.format(before_arg, after_arg))
+    click.secho("before: {}, after: {}".format(before_arg, after_arg))
 
 
 if __name__ == "__main__":

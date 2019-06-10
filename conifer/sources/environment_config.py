@@ -7,7 +7,7 @@ import os
 class EnvironmentConfigLoader(object):
     """Loader for environment variables."""
 
-    def __init__(self, prefix=''):
+    def __init__(self, prefix=""):
         self._prefix = prefix
 
     def load_config(self, schema):
@@ -15,7 +15,7 @@ class EnvironmentConfigLoader(object):
         partial_config = {}
 
         for key_name, sub_schema in iter_schema(schema):
-            environment_key = self._prefix + '_'.join(key_name)
+            environment_key = self._prefix + "_".join(key_name)
             raw_value = os.environ.get(environment_key)
             coerced_value = coerce_value(raw_value, sub_schema)
 
