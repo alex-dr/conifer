@@ -27,11 +27,11 @@ def iter_schema(schema):
     (['outer', 'inner', 'nested'], {'type': 'string'})
     """
     validator = Draft4Validator(schema)
-    for key, value in schema.get('properties', {}).iteritems():
-        if value.get('$ref'):
-            value.update(validator.resolver.resolve(value.get('$ref'))[1])
-            value.pop('$ref')
-        if value.get('type') == 'object':
+    for key, value in schema.get("properties", {}).iteritems():
+        if value.get("$ref"):
+            value.update(validator.resolver.resolve(value.get("$ref"))[1])
+            value.pop("$ref")
+        if value.get("type") == "object":
             for subkey, sub_value in iter_schema(value):
                 yield ([key] + subkey, sub_value)
         else:
@@ -50,16 +50,16 @@ def coerce_value(value, schema):
 
     validator = Draft4Validator(schema)
     value_type = type(value)
-    schema_type = schema.get('type')
+    schema_type = schema.get("type")
 
     if isinstance(schema_type, str):
         coerced_value = _coercion_matrix[value_type][schema_type](value)
         validator.validate(coerced_value)
         return coerced_value
 
-    schema_allof = schema.get('allOf')
-    schema_anyof = schema.get('anyOf')
-    schema_oneof = schema.get('oneOf')
+    schema_allof = schema.get("allOf")
+    schema_anyof = schema.get("anyOf")
+    schema_oneof = schema.get("oneOf")
 
     def coerce_iterable(schemas, stop_on_valid=True):
         last_exception = None
@@ -83,18 +83,18 @@ def coerce_value(value, schema):
         return coerce_iterable(schema_type)
 
     if schema_anyof is not None:
-        return coerce_iterable(schema['anyOf'])
+        return coerce_iterable(schema["anyOf"])
 
     if schema_allof is not None:
-        return coerce_iterable(schema['allOf'], stop_on_valid=False)
+        return coerce_iterable(schema["allOf"], stop_on_valid=False)
 
     if schema_oneof is not None:
-        return coerce_iterable(schema['oneOf'])
+        return coerce_iterable(schema["oneOf"])
 
 
 def _string_to_array(value):
     """Attempt to divine an array from what we got."""
-    return map(lambda x: x.strip(), value.split(','))
+    return map(lambda x: x.strip(), value.split(","))
 
 
 def _string_to_bool(value):
@@ -108,7 +108,7 @@ def _string_to_bool(value):
 def _string_to_object(value):
     value = yaml.safe_load(value)
     if not isinstance(value, dict):
-        raise CoercionError('Could not coerce string \'{}\' to dict'.format(value))
+        raise CoercionError("Could not coerce string '{}' to dict".format(value))
 
 
 def _coerce_to_number(value):
@@ -124,42 +124,44 @@ def _coerce_to_number(value):
 
 def _raise_coercion_error(value, desired_type):
     value_type = type(value)
-    raise CoercionError('Could not cast value {} of type {} '
-                        'to type {}'.format(value, value_type, desired_type))
+    raise CoercionError(
+        "Could not cast value {} of type {} "
+        "to type {}".format(value, value_type, desired_type)
+    )
 
 
 # Dict of all coercions we can perform based on valid jsonschema simple types
 _coercion_matrix = {
     str: {
-        'array': _string_to_array,
-        'boolean': _string_to_bool,
-        'integer': lambda x: int(x),
-        'number': _coerce_to_number,
-        'object': _string_to_object,
-        'string': lambda x: x,
+        "array": _string_to_array,
+        "boolean": _string_to_bool,
+        "integer": lambda x: int(x),
+        "number": _coerce_to_number,
+        "object": _string_to_object,
+        "string": lambda x: x,
     },
     unicode: {
-        'array': _string_to_array,
-        'boolean': _string_to_bool,
-        'integer': lambda x: int(x),
-        'number': _coerce_to_number,
-        'object': _string_to_object,
-        'string': lambda x: x,
+        "array": _string_to_array,
+        "boolean": _string_to_bool,
+        "integer": lambda x: int(x),
+        "number": _coerce_to_number,
+        "object": _string_to_object,
+        "string": lambda x: x,
     },
     int: {
-        'array': lambda x: [x],
-        'boolean': lambda x: bool(x),
-        'integer': lambda x: x,
-        'number': _coerce_to_number,
-        'object': lambda x: _raise_coercion_error(x, 'object'),
-        'string': lambda x: str(x),
+        "array": lambda x: [x],
+        "boolean": lambda x: bool(x),
+        "integer": lambda x: x,
+        "number": _coerce_to_number,
+        "object": lambda x: _raise_coercion_error(x, "object"),
+        "string": lambda x: str(x),
     },
     list: {
-        'array': lambda x: x,
-        'boolean': lambda x: bool(x),
-        'integer': lambda x: _raise_coercion_error(x, 'integer'),
-        'number': lambda x: _raise_coercion_error(x, 'number'),
-        'object': lambda x: _raise_coercion_error(x, 'object'),
-        'string': lambda x: str(x),
+        "array": lambda x: x,
+        "boolean": lambda x: bool(x),
+        "integer": lambda x: _raise_coercion_error(x, "integer"),
+        "number": lambda x: _raise_coercion_error(x, "number"),
+        "object": lambda x: _raise_coercion_error(x, "object"),
+        "string": lambda x: str(x),
     },
 }

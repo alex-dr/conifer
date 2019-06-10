@@ -7,6 +7,7 @@ from conifer.utils import get_in, recursive_update
 
 class JSONFileLoader(object):
     """Loader for JSON files."""
+
     def __init__(self, path=None, fp=None):
         """JSON file config loader.
 
@@ -20,9 +21,13 @@ class JSONFileLoader(object):
             Pointer to an open file object
         """
         if path is not None and fp is not None:
-            raise ValueError('JSONFileLoader must be instantiated with one of path or fp')
+            raise ValueError(
+                "JSONFileLoader must be instantiated with one of path or fp"
+            )
         if path is None and fp is None:
-            raise ValueError('JSONFileLoader must be instantiated with one of path or fp')
+            raise ValueError(
+                "JSONFileLoader must be instantiated with one of path or fp"
+            )
 
         if path is not None:
             path = os.path.abspath(os.path.expanduser(os.path.expandvars(path)))
@@ -33,7 +38,7 @@ class JSONFileLoader(object):
 
     def _load_data(self):
         if self._path is not None:
-            with open(self._path, 'rb') as _fp:
+            with open(self._path, "rb") as _fp:
                 self._data = json.load(_fp)
         else:
             self._data = json.load(self._fp)

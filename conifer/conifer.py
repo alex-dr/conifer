@@ -53,7 +53,9 @@ class Conifer(object):
         ------------
         modifies self._config
         """
-        new_config = _update_config(self._config, self._schema, self._sources, self._derivations)
+        new_config = _update_config(
+            self._config, self._schema, self._sources, self._derivations
+        )
         self._validator.validate(new_config)
         recursive_update(self._config, new_config)
 
@@ -73,10 +75,12 @@ class Conifer(object):
         -------
         Conifer
         """
-        new_conf = Conifer(self._schema,
-                           sources=sources,
-                           derivations=self._derivations,
-                           initial_config=self._config)
+        new_conf = Conifer(
+            self._schema,
+            sources=sources,
+            derivations=self._derivations,
+            initial_config=self._config,
+        )
         return new_conf
 
     def __getitem__(self, key):
@@ -94,6 +98,7 @@ class Conifer(object):
 
 class _AttrDict(dict):
     """Dict with mild overrides so we can use keys as attributes."""
+
     _dict = None
 
     def __init__(self, dic):
@@ -103,7 +108,9 @@ class _AttrDict(dict):
     def __getattr__(self, key):
         value = self._dict.get(key)
         if value is None:
-            raise AttributeError('{self} object has no such attribute {key}'.format(**locals()))
+            raise AttributeError(
+                "{self} object has no such attribute {key}".format(**locals())
+            )
 
         if isinstance(value, dict):
             return _AttrDict(value)
@@ -118,7 +125,7 @@ def _iter_derivations(derivations):
     """
     if derivations is not None:
         for key, value in derivations.iteritems():
-            if 'derivation' not in value:
+            if "derivation" not in value:
                 for subkey, sub_value in _iter_derivations(value):
                     yield ([key] + subkey, sub_value)
             else:
@@ -129,14 +136,14 @@ def _derive_values(config, derivations):
     """Use derivation rules to determine derived config values."""
     derived_config = {}
     for key, value in _iter_derivations(derivations):
-        param_keys = value['parameters']
+        param_keys = value["parameters"]
         try:
             params = [get_in(config, param_key) for param_key in param_keys]
         except KeyError:
             # If key is not defined, don't try to derive a value
             continue
         else:
-            result = value['derivation'](*params)
+            result = value["derivation"](*params)
             set_in(derived_config, key, result)
 
     return derived_config
@@ -152,21 +159,17 @@ def _extend_with_default(validator_class):
 
     From: http://python-jsonschema.readthedocs.io/en/latest/faq/
     """
-    validate_properties = validator_class.VALIDATORS['properties']
+    validate_properties = validator_class.VALIDATORS["properties"]
 
     def set_defaults(validator, properties, instance, schema):
         for property, subschema in properties.iteritems():
-            if 'default' in subschema:
-                instance.setdefault(property, subschema['default'])
+            if "default" in subschema:
+                instance.setdefault(property, subschema["default"])
 
-        for error in validate_properties(
-            validator, properties, instance, schema,
-        ):
+        for error in validate_properties(validator, properties, instance, schema):
             yield error
 
-    return validators.extend(
-        validator_class, {'properties': set_defaults},
-    )
+    return validators.extend(validator_class, {"properties": set_defaults})
 
 
 def _update_config(existing_config, schema, sources, derivations):
@@ -190,12 +193,14 @@ def _update_config(existing_config, schema, sources, derivations):
 
 def _validate_schema(schema):
     """Helper function to validate that the schema is itself valid."""
-    schema_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'json-schema.json')
-    with open(schema_path, 'rb') as schema_file:
+    schema_path = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "json-schema.json"
+    )
+    with open(schema_path, "rb") as schema_file:
         json_schema = json.load(schema_file)
 
     validator = Draft4Validator(json_schema)
     validator.validate(schema)
 
-    if 'properties' not in schema:
-        raise ValueError('Invalid schema: must have `properties` key')
+    if "properties" not in schema:
+        raise ValueError("Invalid schema: must have `properties` key")
