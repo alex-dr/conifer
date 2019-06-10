@@ -10,7 +10,7 @@ def test_example():
 def test_click_example():
     """Test that the click example script always runs."""
     try:
-        my_cmd(('foo', 'bar'))
+        my_cmd(("foo", "bar"))
     except SystemExit as exc:
         if exc.code != 0:
             raise exc
