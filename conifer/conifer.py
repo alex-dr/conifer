@@ -88,7 +88,7 @@ class Conifer(object):
 
         self._derivations = derivations
 
-        if not load_on_init:
+        if not skip_load_on_init:
             self.update_config()
 
     def update_config(self):
