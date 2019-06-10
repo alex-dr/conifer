@@ -1,5 +1,8 @@
 import json
-from StringIO import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from conifer.sources.json_file import JSONFileLoader
 
