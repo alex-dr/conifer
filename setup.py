@@ -8,12 +8,16 @@ setup(name='conifer',
       author_email='alexconway12@gmail.com',
       url='https://github.com/alex-dr/conifer',
       install_requires=[
-          'jsonschema'
+          # License: MIT
+          'jsonschema',
+          # License: MIT
+          'PyYAML',
       ],
       extras_require={
           'test': [
               'pytest',
               'pytest-mock',
+              'tox',
           ],
       },
       packages=find_packages(),
@@ -25,6 +29,7 @@ setup(name='conifer',
           'Operating System :: POSIX :: Linux',
           'Programming Language :: Python :: 2',
           'Programming Language :: Python :: 2.7',
+          'Programming Language :: Python :: 3.6',
           'Topic :: Software Development :: Libraries',
       ],
       keywords=[
