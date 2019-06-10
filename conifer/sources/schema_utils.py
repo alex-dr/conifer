@@ -27,7 +27,7 @@ def iter_schema(schema):
     (['outer', 'inner', 'nested'], {'type': 'string'})
     """
     validator = Draft4Validator(schema)
-    for key, value in schema.get("properties", {}).iteritems():
+    for key, value in schema.get("properties", {}).items():
         if value.get("$ref"):
             value.update(validator.resolver.resolve(value.get("$ref"))[1])
             value.pop("$ref")

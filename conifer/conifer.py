@@ -178,7 +178,7 @@ def _iter_derivations(derivations):
     Return (['nested', 'key'], value).
     """
     if derivations is not None:
-        for key, value in derivations.iteritems():
+        for key, value in derivations.items():
             if "derivation" not in value:
                 for subkey, sub_value in _iter_derivations(value):
                     yield ([key] + subkey, sub_value)
@@ -216,7 +216,7 @@ def _extend_with_default(validator_class):
     validate_properties = validator_class.VALIDATORS["properties"]
 
     def set_defaults(validator, properties, instance, schema):
-        for property, subschema in properties.iteritems():
+        for property, subschema in properties.items():
             if "default" in subschema:
                 instance.setdefault(property, subschema["default"])
 

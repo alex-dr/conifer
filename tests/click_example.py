@@ -1,6 +1,6 @@
 import json
 
-from example import conf
+from .example import conf
 
 from conifer import click_wrap
 

@@ -9,7 +9,7 @@ def recursive_update(original, updates):
     if updates is None:
         return
 
-    for key, value in updates.iteritems():
+    for key, value in updates.items():
         if isinstance(value, Mapping):
             # if original has a mapping, recursively update it
             # otherwise, just replace the value with the new mapping
