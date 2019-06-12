@@ -68,7 +68,8 @@ def coerce_value(value, schema):
                 coerced_value = _coercion_matrix[value_type][desirable_type](value)
                 # Try to validate; if we can't maybe we can try another type
                 validator.validate(coerced_value)
-            except Exception as last_exception:
+            except Exception as exc:
+                last_exception = exc
                 # Not coercing to the first option is not unexpected
                 pass
             # raise last exception with traceback

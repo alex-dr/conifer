@@ -1,6 +1,5 @@
 # builtin
 from copy import deepcopy
-from functools import wraps, reduce
 import json
 import os
 
@@ -8,8 +7,7 @@ import os
 from jsonschema import Draft4Validator, validators
 
 # this package
-from .sources import EnvironmentConfigLoader, ClickOptionLoader
-from .sources.schema_utils import iter_schema
+from .sources import EnvironmentConfigLoader
 from .utils import get_in, recursive_update, set_in
 
 
@@ -20,9 +18,9 @@ class Conifer(object):
 
     By default, Conifer will use the built-in EnvironmentConfigLoader source only.
 
-    On instantiation, Conifer will immediately load configuraiton from all configured sources,
-    unless `load_on_init` is set to True. In the latter case, `self.update_config` must be called
-    manually after instantiation.
+    On instantiation, Conifer will immediately load configuration from all configured sources,
+    unless `skip_load_on_init` is set to True. In the latter case, `self.update_config` must be
+    called manually after instantiation.
 
     Derivations:
         Derivations enable defining additional configuration based on the
