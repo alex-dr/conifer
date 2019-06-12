@@ -1,12 +1,15 @@
 import json
 import os
 
+from .base_loader import BaseLoader, LoaderMode
 from .schema_utils import coerce_value, iter_schema, nest_value
 from conifer.utils import get_in, recursive_update
 
 
-class JSONFileLoader(object):
+class JSONFileLoader(BaseLoader):
     """Loader for JSON files."""
+
+    mode = LoaderMode.RO
 
     def __init__(self, path=None, fp=None):
         """JSON file config loader.
@@ -43,7 +46,7 @@ class JSONFileLoader(object):
         else:
             self._data = json.load(self._fp)
 
-    def load_config(self, schema):
+    def _load_config(self, schema):
         """Load configuration values for this schema."""
         partial_config = {}
 

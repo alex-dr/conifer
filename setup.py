@@ -13,6 +13,8 @@ setup(
         "jsonschema",
         # License: MIT
         "PyYAML",
+        # License: BSD
+        "enum34==1.1.6; python_version < '3.0'",
     ],
     extras_require={
         "test": ["pytest", "pytest-mock", "tox", "click"],
