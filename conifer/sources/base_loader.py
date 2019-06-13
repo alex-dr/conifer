@@ -37,8 +37,7 @@ class BaseLoader(object):
         Can perform a lookup of possible config settings or simply load all of
         the data in a source. Be careful with the latter - additional config
         settings may be present in the source and fail validation. For example
-        grabbing all possible environment values is likely to break someone's
-        infrastructure.
+        grabbing all possible environment values is likely to not work.
 
         Should not load settings which are deemed to be empty or null-valued.
 
