@@ -7,7 +7,7 @@ import os
 from jsonschema import Draft4Validator, validators
 
 # this package
-from .sources import EnvironmentConfigLoader
+from .sources import EnvironmentConfigLoader, LoaderMode
 from .utils import get_in, recursive_update, set_in
 
 
@@ -134,6 +134,9 @@ class Conifer(object):
     def __getattr__(self, key):
         return _AttrDict(self._config).__getattr__(key)
 
+    def __setattr__(self, key, value):
+        _AttrDict(self._config)[key] = value
+
     def get(self, key, default=None):
         """Get value, default, or None."""
         try:
@@ -147,6 +150,29 @@ class Conifer(object):
         except KeyError:
             return default
 
+    def _first_writable_source(self):
+        """Return the first writable source with writable mode."""
+        for source in self._sources:
+            if source.mode in (LoaderMode.RW, LoaderMode.RO):
+                return source
+
+        return ValueError("Asked to write config but no sources are writable.")
+
+    def set(self, key):
+        """Set key in the top-level writable source."""
+        pass
+
+    def update(self, data):
+        """Update configuration, writing to the first writable source."""
+        config = deepcopy(self._config)
+        new_config = recursive_update(config, data)
+        self._validator.validate(new_config)
+
+        source = self._first_writable_source()
+        source.update(data)
+
+        self.update_config()
+
 
 class _AttrDict(dict):
     """Dict with mild overrides so we can use keys as attributes."""
@@ -158,8 +184,9 @@ class _AttrDict(dict):
         self._dict = dic
 
     def __getattr__(self, key):
-        value = self._dict.get(key)
-        if value is None:
+        try:
+            value = self._dict[key]
+        except KeyError:
             raise AttributeError(
                 "{self} object has no such attribute {key}".format(**locals())
             )
