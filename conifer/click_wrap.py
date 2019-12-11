@@ -15,11 +15,11 @@ def click_wrap(conf):
     Example:
 
         >>> import click
-        >>> from conifer import Conifer
+        >>> from conifer import Conifer, click_wrap
         >>> conf = Conifer(schema, [source, ...])
 
         >>> @click.command()
-        >>> @conf.click_wrap()
+        >>> @click_wrap(conf)
         >>> def my_cmd(cli_conf):
         ...     click.secho(cli_conf)
 

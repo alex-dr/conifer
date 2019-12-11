@@ -1,6 +1,6 @@
 import json
 
-from .example import conf
+from tests.example import conf
 
 from conifer import click_wrap
 
@@ -23,6 +23,7 @@ def my_cmd(cli_conf, before_arg, after_arg, before_option=None, after_option=Non
     """
     click.secho(json.dumps(cli_conf._config, indent=4))
     click.secho("before: {}, after: {}".format(before_arg, after_arg))
+    click.secho("before opt: {}, after opt: {}".format(before_option, after_option))
 
 
 if __name__ == "__main__":
