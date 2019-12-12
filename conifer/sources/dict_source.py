@@ -16,7 +16,7 @@ class DictLoader(object):
             try:
                 raw_value = get_in(self._data, key_name)
             except KeyError:
-                break
+                continue
 
             coerced_value = coerce_value(raw_value, sub_schema)
 
