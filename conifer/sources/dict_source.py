@@ -1,3 +1,5 @@
+from copy import copy
+
 from .schema_utils import coerce_value, iter_schema, nest_value
 from conifer.utils import get_in, recursive_update
 
@@ -10,7 +12,7 @@ class DictLoader(object):
 
     def load_config(self, schema):
         """Load configuration values for this schema."""
-        partial_config = {}
+        partial_config = copy(self._data)
 
         for key_name, sub_schema in iter_schema(schema):
             try:

@@ -40,6 +40,9 @@ schema = {
                     "description": "(optional) Absolute or relative file path for logging",
                     "type": ["string", "null"],
                 },
+                "NESTED_DICT_OVERRIDE": {
+                    "type": ["string", "null"],
+                },
             },
             "default": {},  # required for nested defaults to be defaulted
         },
@@ -78,7 +81,7 @@ derivations = {
     },
 }
 
-data_dict = {"DICT_OVERRIDE": "overridden"}
+data_dict = {"DICT_OVERRIDE": "overridden", "LOGGING": {"NESTED_DICT_OVERRIDE": "overridden"}}
 
 conf = Conifer(
     schema,
@@ -107,6 +110,7 @@ def main():
     # derivations are copied over and re-calculated
     assert other_conf.DEBUG_PORT == 1235
     assert conf.DICT_OVERRIDE == "overridden"
+    assert conf.LOGGING.NESTED_DICT_OVERRIDE == "overridden"
 
 
 if __name__ == "__main__":
