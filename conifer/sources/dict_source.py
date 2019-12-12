@@ -13,7 +13,11 @@ class DictLoader(object):
         partial_config = {}
 
         for key_name, sub_schema in iter_schema(schema):
-            raw_value = get_in(self._data, key_name)
+            try:
+                raw_value = get_in(self._data, key_name)
+            except KeyError:
+                break
+
             coerced_value = coerce_value(raw_value, sub_schema)
 
             recursive_update(partial_config, nest_value(key_name, coerced_value))
