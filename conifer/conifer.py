@@ -6,6 +6,7 @@ import os
 
 # third party
 from jsonschema import Draft4Validator, validators
+from pyrsistent import freeze, thaw
 
 # this package
 from .sources import EnvironmentConfigLoader, ClickOptionLoader
@@ -69,6 +70,8 @@ class Conifer(object):
         initial_config=None,
         skip_load_on_init=False,
     ):
+        # Very bad things happen if schema is modified
+        schema = freeze(schema)
         # ensure we have a valid JSON Schema
         _validate_schema(schema)
         self._schema = schema
@@ -77,7 +80,8 @@ class Conifer(object):
         self._config = initial_config or {}
         # update self._config with default values from the schema
         # since this uses setdefault, it shouldn't override initial_config
-        DefaultSettingValidator(schema).validate(self._config)
+        # Uses thawed copy of schema because jsonschema wants a regular dict
+        DefaultSettingValidator(thaw(schema)).validate(self._config)
 
         self._validator = Draft4Validator(self._schema)
 
@@ -247,6 +251,7 @@ def _update_config(existing_config, schema, sources, derivations):
 
 def _validate_schema(schema):
     """Helper function to validate that the schema is itself valid."""
+    schema = thaw(schema)
     schema_path = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), "json-schema.json"
     )

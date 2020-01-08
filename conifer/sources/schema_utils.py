@@ -157,6 +157,14 @@ _coercion_matrix = {
         "object": lambda x: _raise_coercion_error(x, "object"),
         "string": lambda x: str(x),
     },
+    bool: {
+        "array": lambda x: bool(x),
+        "boolean": lambda x: bool(x),
+        "integer": lambda x: bool(x),
+        "number": lambda x: bool(x),
+        "object": lambda x: bool(x),
+        "string": lambda x: bool(x),
+    },
 }
 
 # TODO: this is probably not the cleanest way to do this

@@ -11,7 +11,7 @@ It is tested with test_example.py, so it's useful as an end to end test.
 import os
 
 from conifer import Conifer
-from conifer.sources import EnvironmentConfigLoader, JSONFileLoader
+from conifer.sources import DictLoader, EnvironmentConfigLoader, JSONFileLoader
 
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -40,8 +40,16 @@ schema = {
                     "description": "(optional) Absolute or relative file path for logging",
                     "type": ["string", "null"],
                 },
+                "NESTED_DICT_OVERRIDE": {
+                    "type": ["string", "null"],
+                },
             },
             "default": {},  # required for nested defaults to be defaulted
+        },
+        "DICT_OVERRIDE": {
+            "description": "Key to override from dict loader",
+            "type": "string",
+            "default": "original",
         },
         "DEBUG_MODE": {
             "description": "Enable debug mode for my Flask app",
@@ -73,9 +81,14 @@ derivations = {
     },
 }
 
+data_dict = {"DICT_OVERRIDE": "overridden", "LOGGING": {"NESTED_DICT_OVERRIDE": "overridden"}}
+
 conf = Conifer(
     schema,
-    sources=[JSONFileLoader(path=JSON_PATH), EnvironmentConfigLoader()],
+    sources=[
+        DictLoader(data_dict),
+        JSONFileLoader(path=JSON_PATH),
+        EnvironmentConfigLoader()],
     derivations=derivations,
 )
 
@@ -96,6 +109,8 @@ def main():
     assert other_conf.PORT == 1234
     # derivations are copied over and re-calculated
     assert other_conf.DEBUG_PORT == 1235
+    assert conf.DICT_OVERRIDE == "overridden"
+    assert conf.LOGGING.NESTED_DICT_OVERRIDE == "overridden"
 
 
 if __name__ == "__main__":
