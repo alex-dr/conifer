@@ -39,7 +39,8 @@ class JSONFileLoader(object):
     def _load_data(self):
         if self._path is not None:
             if not os.path.exists(self._path):
-                return {}
+                self._data = {}
+                return
             with open(self._path, "rb") as _fp:
                 self._data = json.load(_fp)
         else:
