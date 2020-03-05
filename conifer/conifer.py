@@ -153,6 +153,10 @@ class Conifer(object):
         except KeyError:
             return default
 
+    def as_dict(self):
+        """Return plain config dictionary."""
+        return self._config
+
 
 class _AttrDict(dict):
     """Dict with mild overrides so we can use keys as attributes."""
