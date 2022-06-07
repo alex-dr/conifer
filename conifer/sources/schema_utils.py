@@ -103,7 +103,7 @@ def _string_to_bool(value):
 
     Accepts lots of stuff from the yaml spec, like 0, yes, no, TRUE, etc
     """
-    return bool(yaml.load(value))
+    return bool(yaml.safe_load(value))
 
 
 def _string_to_object(value):
