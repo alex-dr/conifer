@@ -1,2 +1,2 @@
-include *.json
+include conifer/*.json
 prune tests
